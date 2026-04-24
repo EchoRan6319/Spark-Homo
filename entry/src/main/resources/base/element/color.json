@@ -1,0 +1,100 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "primary",
+      "value": "#007AFF"
+    },
+    {
+      "name": "background",
+      "value": "#F2F2F7"
+    },
+    {
+      "name": "card_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "text_primary",
+      "value": "#000000"
+    },
+    {
+      "name": "text_secondary",
+      "value": "#8E8E93"
+    },
+    {
+      "name": "divider",
+      "value": "#E5E5EA"
+    },
+    {
+      "name": "input_background",
+      "value": "#F2F2F7"
+    },
+    {
+      "name": "tag_background",
+      "value": "#E5F0FF"
+    },
+    {
+      "name": "secondary_button",
+      "value": "#E5E5EA"
+    },
+    {
+      "name": "success",
+      "value": "#34C759"
+    },
+    {
+      "name": "error",
+      "value": "#FF3B30"
+    },
+    {
+      "name": "warning",
+      "value": "#FF9500"
+    },
+    {
+      "name": "tab_bar_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "page_background",
+      "value": "#F2F2F7"
+    },
+    {
+      "name": "emotion_happy",
+      "value": "#34C759"
+    },
+    {
+      "name": "emotion_sad",
+      "value": "#5856D6"
+    },
+    {
+      "name": "emotion_angry",
+      "value": "#FF3B30"
+    },
+    {
+      "name": "emotion_surprised",
+      "value": "#FF9500"
+    },
+    {
+      "name": "emotion_thinking",
+      "value": "#007AFF"
+    },
+    {
+      "name": "status_active_bg",
+      "value": "#D9E8FF"
+    },
+    {
+      "name": "status_completed_bg",
+      "value": "#D4F5E0"
+    },
+    {
+      "name": "status_paused_bg",
+      "value": "#FFF0D9"
+    },
+    {
+      "name": "card_shadow",
+      "value": "#0D000000"
+    }
+  ]
+}

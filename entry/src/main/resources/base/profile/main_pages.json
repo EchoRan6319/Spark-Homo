@@ -1,0 +1,10 @@
+{
+  "src": [
+    "pages/MainPage",
+    "pages/inspiration/InspirationDetailPage",
+    "pages/inspiration/CapturePage",
+    "pages/inspiration/MindMapPage",
+    "pages/ai/AiChatPage",
+    "pages/project/ProjectDetailPage"
+  ]
+}

@@ -1,0 +1,226 @@
+"C:\Program Files\Huawei\DevEco Studio\tools\node\node.exe" "C:\Program Files\Huawei\DevEco Studio\tools\hvigor\bin\hvigorw.js" --mode module -p module=entry@default -p product=default -p requiredDeviceType=phone assembleHap --analyze=normal --parallel --incremental --daemon
+> hvigor hvigor client: Starting hvigor daemon.
+> hvigor Hvigor Daemon started in 539 ms
+> hvigor Finished :entry:default@PreBuild... after 122 ms 
+> hvigor Finished :entry:default@CreateModuleInfo... after 1 ms 
+> hvigor UP-TO-DATE :entry:default@GenerateMetadata...  
+> hvigor Finished :entry:default@ConfigureCmake... after 1 ms 
+> hvigor UP-TO-DATE :entry:default@MergeProfile...  
+> hvigor UP-TO-DATE :entry:default@CreateBuildProfile...  
+> hvigor Finished :entry:default@PreCheckSyscap... after 1 ms 
+> hvigor UP-TO-DATE :entry:default@GeneratePkgContextInfo...  
+> hvigor Finished :entry:default@ProcessIntegratedHsp... after 1 ms 
+> hvigor Finished :entry:default@BuildNativeWithCmake... after 1 ms 
+> hvigor UP-TO-DATE :entry:default@MakePackInfo...  
+> hvigor Finished :entry:default@SyscapTransform... after 10 ms 
+> hvigor UP-TO-DATE :entry:default@ProcessProfile...  
+> hvigor UP-TO-DATE :entry:default@ProcessRouterMap...  
+> hvigor UP-TO-DATE :entry:default@ProcessShareConfig...  
+> hvigor Finished :entry:default@ProcessStartupConfig... after 2 ms 
+> hvigor Finished :entry:default@BuildNativeWithNinja... after 1 ms 
+> hvigor UP-TO-DATE :entry:default@ProcessResource...  
+> hvigor UP-TO-DATE :entry:default@GenerateLoaderJson...  
+> hvigor UP-TO-DATE :entry:default@ProcessLibs...  
+> hvigor Finished :entry:default@CompileResource... after 248 ms 
+> hvigor UP-TO-DATE :entry:default@DoNativeStrip...  
+> hvigor Finished :entry:default@BuildJS... after 2 ms 
+> hvigor UP-TO-DATE :entry:default@CacheNativeLibs...  
+> hvigor ERROR: Failed :entry:default@CompileArkTS... 
+> hvigor WARN: 
+1 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/datasources/RdbHelper.ets:113:13
+ Function may throw exceptions. Special handling is required.
+
+2 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:151:21
+ Function may throw exceptions. Special handling is required.
+
+3 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:152:32
+ Function may throw exceptions. Special handling is required.
+
+4 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:155:30
+ Function may throw exceptions. Special handling is required.
+
+5 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:157:30
+ Function may throw exceptions. Special handling is required.
+
+6 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:159:30
+ Function may throw exceptions. Special handling is required.
+
+7 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:161:30
+ Function may throw exceptions. Special handling is required.
+
+8 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:163:30
+ Function may throw exceptions. Special handling is required.
+
+9 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:193:21
+ Function may throw exceptions. Special handling is required.
+
+10 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:194:32
+ Function may throw exceptions. Special handling is required.
+
+11 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:197:30
+ Function may throw exceptions. Special handling is required.
+
+12 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:199:30
+ Function may throw exceptions. Special handling is required.
+
+13 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:201:30
+ Function may throw exceptions. Special handling is required.
+
+14 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:203:30
+ Function may throw exceptions. Special handling is required.
+
+15 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:205:30
+ Function may throw exceptions. Special handling is required.
+
+16 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/home/HomePage.ets:49:18
+ 'pushUrl' has been deprecated.
+
+17 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/home/HomePage.ets:127:14
+ 'pushUrl' has been deprecated.
+
+18 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/home/HomePage.ets:150:14
+ 'pushUrl' has been deprecated.
+
+19 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/home/HomePage.ets:173:20
+ 'pushUrl' has been deprecated.
+
+20 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/home/HomePage.ets:185:20
+ 'pushUrl' has been deprecated.
+
+21 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationListPage.ets:41:18
+ 'pushUrl' has been deprecated.
+
+22 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationListPage.ets:183:14
+ 'pushUrl' has been deprecated.
+
+23 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/project/ProjectListPage.ets:139:14
+ 'pushUrl' has been deprecated.
+
+24 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:22:29
+ Function may throw exceptions. Special handling is required.
+
+25 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:27:11
+ Function may throw exceptions. Special handling is required.
+
+26 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:28:11
+ Function may throw exceptions. Special handling is required.
+
+27 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:33:18
+ Function may throw exceptions. Special handling is required.
+
+28 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:38:11
+ Function may throw exceptions. Special handling is required.
+
+29 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:39:11
+ Function may throw exceptions. Special handling is required.
+
+30 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:44:18
+ Function may throw exceptions. Special handling is required.
+
+31 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:49:11
+ Function may throw exceptions. Special handling is required.
+
+32 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:50:11
+ Function may throw exceptions. Special handling is required.
+
+33 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:55:18
+ Function may throw exceptions. Special handling is required.
+
+34 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:60:11
+ Function may throw exceptions. Special handling is required.
+
+35 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:61:11
+ Function may throw exceptions. Special handling is required.
+
+36 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/storage/SettingsService.ets:66:18
+ Function may throw exceptions. Special handling is required.
+
+37 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/ai/AiService.ets:114:42
+ To use this API, you need to apply for the permissions: ohos.permission.INTERNET
+
+38 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/ai/AiService.ets:169:42
+ To use this API, you need to apply for the permissions: ohos.permission.INTERNET
+
+39 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/ai/AiService.ets:214:42
+ To use this API, you need to apply for the permissions: ohos.permission.INTERNET
+
+40 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/services/ai/AiService.ets:299:19
+ To use this API, you need to apply for the permissions: ohos.permission.INTERNET
+
+41 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:22:27
+ 'getParams' has been deprecated.
+
+42 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:64:14
+ 'back' has been deprecated.
+
+43 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:72:5
+ Function may throw exceptions. Special handling is required.
+
+44 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:72:12
+ 'pushUrl' has been deprecated.
+
+45 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:118:18
+ 'back' has been deprecated.
+
+46 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:243:20
+ 'pushUrl' has been deprecated.
+
+47 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/InspirationDetailPage.ets:256:20
+ 'pushUrl' has been deprecated.
+
+48 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/CapturePage.ets:20:27
+ 'getParams' has been deprecated.
+
+49 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/CapturePage.ets:61:14
+ 'back' has been deprecated.
+
+50 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/CapturePage.ets:112:18
+ 'back' has been deprecated.
+
+51 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/MindMapPage.ets:21:27
+ 'getParams' has been deprecated.
+
+52 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/MindMapPage.ets:94:18
+ 'back' has been deprecated.
+
+53 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/inspiration/MindMapPage.ets:178:5
+ Function may throw exceptions. Special handling is required.
+
+54 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/ai/AiChatPage.ets:30:27
+ 'getParams' has been deprecated.
+
+55 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/ai/AiChatPage.ets:124:18
+ 'back' has been deprecated.
+
+56 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/project/ProjectDetailPage.ets:16:27
+ 'getParams' has been deprecated.
+
+57 WARN: ArkTS:WARN File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/pages/project/ProjectDetailPage.ets:90:18
+ 'back' has been deprecated.
+
+> hvigor ERROR: ArkTS Compiler Error
+1 ERROR: 10505001 ArkTS Compiler Error
+Error Message: Property 'DOUBLE' does not exist on type 'typeof ColumnType'. At File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:156:60
+
+
+2 ERROR: 10505001 ArkTS Compiler Error
+Error Message: Property 'STRING' does not exist on type 'typeof ColumnType'. At File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/InspirationRepository.ets:158:60
+
+
+3 ERROR: 10505001 ArkTS Compiler Error
+Error Message: Property 'DOUBLE' does not exist on type 'typeof ColumnType'. At File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:198:60
+
+
+4 ERROR: 10505001 ArkTS Compiler Error
+Error Message: Property 'STRING' does not exist on type 'typeof ColumnType'. At File: D:/Projects/DevEcoStudioProjects/Spark/entry/src/main/ets/data/repositories/ProjectRepository.ets:200:60
+
+
+COMPILE RESULT:FAIL {ERROR:5 WARN:57}
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+
+> hvigor ERROR: BUILD FAILED in 7 s 984 ms 
+
+Process finished with exit code -1

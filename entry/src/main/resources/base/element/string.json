@@ -1,0 +1,176 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "灵光 - 创意管理应用"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "灵光应用主入口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "灵光"
+    },
+    {
+      "name": "tab_home",
+      "value": "首页"
+    },
+    {
+      "name": "tab_inspiration",
+      "value": "灵感"
+    },
+    {
+      "name": "tab_project",
+      "value": "项目"
+    },
+    {
+      "name": "tab_settings",
+      "value": "我的"
+    },
+    {
+      "name": "capture_title",
+      "value": "捕捉灵感"
+    },
+    {
+      "name": "edit_title",
+      "value": "编辑灵感"
+    },
+    {
+      "name": "content_placeholder",
+      "value": "此刻的想法是..."
+    },
+    {
+      "name": "emotion_label",
+      "value": "情绪"
+    },
+    {
+      "name": "tag_label",
+      "value": "标签"
+    },
+    {
+      "name": "tag_placeholder",
+      "value": "添加标签..."
+    },
+    {
+      "name": "add_tag",
+      "value": "添加"
+    },
+    {
+      "name": "save_inspiration",
+      "value": "保存灵感"
+    },
+    {
+      "name": "save_edit",
+      "value": "保存修改"
+    },
+    {
+      "name": "ai_analysis",
+      "value": "AI分析"
+    },
+    {
+      "name": "mind_map",
+      "value": "思维导图"
+    },
+    {
+      "name": "ai_chat",
+      "value": "AI对话"
+    },
+    {
+      "name": "convert_to_project",
+      "value": "转为项目"
+    },
+    {
+      "name": "delete",
+      "value": "删除"
+    },
+    {
+      "name": "ai_settings",
+      "value": "AI设置"
+    },
+    {
+      "name": "theme_settings",
+      "value": "主题设置"
+    },
+    {
+      "name": "about",
+      "value": "关于"
+    },
+    {
+      "name": "api_key_label",
+      "value": "API Key"
+    },
+    {
+      "name": "base_url_label",
+      "value": "Base URL"
+    },
+    {
+      "name": "model_label",
+      "value": "模型"
+    },
+    {
+      "name": "test_connection",
+      "value": "测试连接"
+    },
+    {
+      "name": "connection_success",
+      "value": "连接成功"
+    },
+    {
+      "name": "connection_failed",
+      "value": "连接失败"
+    },
+    {
+      "name": "theme_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "theme_light",
+      "value": "浅色模式"
+    },
+    {
+      "name": "theme_dark",
+      "value": "深色模式"
+    },
+    {
+      "name": "app_version",
+      "value": "1.0.0"
+    },
+    {
+      "name": "developer",
+      "value": "Spark Team"
+    },
+    {
+      "name": "empty_inspiration",
+      "value": "还没有灵感"
+    },
+    {
+      "name": "empty_inspiration_guide",
+      "value": "点击右上角添加你的第一个灵感"
+    },
+    {
+      "name": "empty_project",
+      "value": "还没有项目"
+    },
+    {
+      "name": "empty_project_guide",
+      "value": "点击右上角创建你的第一个项目"
+    },
+    {
+      "name": "search_placeholder",
+      "value": "搜索灵感内容或标签..."
+    },
+    {
+      "name": "task_list",
+      "value": "任务列表"
+    },
+    {
+      "name": "add_task",
+      "value": "添加新任务..."
+    },
+    {
+      "name": "progress",
+      "value": "完成度"
+    }
+  ]
+}
