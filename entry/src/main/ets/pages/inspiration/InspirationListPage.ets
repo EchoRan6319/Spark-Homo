@@ -26,8 +26,6 @@ export struct InspirationListPage {
     .backgroundColor($r('app.color.page_background'))
     .padding({
       top: AppStorage.get<number>('statusBarHeight') || 0,
-      left: 16,
-      right: 16,
       bottom: 16
     })
     .onAppear(() => {
@@ -55,7 +53,7 @@ export struct InspirationListPage {
     }
     .width('100%')
     .padding({ left: 16, right: 16, bottom: 16 })
-    .margin({})
+    .margin({ left: 16, right: 16 })
   }
 
   @Builder
@@ -90,6 +88,7 @@ export struct InspirationListPage {
       .padding({ left: 16, right: 16 })
     }
     .scrollable(ScrollDirection.Horizontal)
+    .scrollBar(BarState.Off)
     .margin({ bottom: 12 })
   }
 

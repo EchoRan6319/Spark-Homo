@@ -101,8 +101,6 @@ struct CapturePage {
     .backgroundColor($r('app.color.page_background'))
     .padding({
       top: AppStorage.get<number>('statusBarHeight') || 0,
-      left: 16,
-      right: 16,
       bottom: 16
     })
   }
@@ -134,6 +132,7 @@ struct CapturePage {
     .width('100%')
     .height(56)
     .padding({ left: 16, right: 16 })
+    .margin({ left: 16, right: 16 })
   }
 
   @Builder

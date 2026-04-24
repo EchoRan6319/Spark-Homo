@@ -67,7 +67,7 @@ struct ProjectDetailPage {
             this.buildTaskList()
           }
           .width('100%')
-          .padding(16)
+          .padding({ left: 16, right: 16 })
         }
         .layoutWeight(1)
 
@@ -79,8 +79,6 @@ struct ProjectDetailPage {
     .backgroundColor($r('app.color.page_background'))
     .padding({
       top: AppStorage.get<number>('statusBarHeight') || 0,
-      left: 16,
-      right: 16,
       bottom: 16
     })
   }
@@ -112,6 +110,7 @@ struct ProjectDetailPage {
     .width('100%')
     .height(56)
     .padding({ left: 16, right: 16 })
+    .margin({ left: 16, right: 16 })
   }
 
   @Builder

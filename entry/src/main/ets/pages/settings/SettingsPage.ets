@@ -30,8 +30,6 @@ export struct SettingsPage {
     .backgroundColor($r('app.color.page_background'))
     .padding({
       top: AppStorage.get<number>('statusBarHeight') || 0,
-      left: 16,
-      right: 16,
       bottom: 16
     })
     .onAppear(() => {
@@ -49,7 +47,7 @@ export struct SettingsPage {
     }
     .width('100%')
     .padding({ left: 16, right: 16, bottom: 16 })
-    .margin({})
+    .margin({ left: 16, right: 16 })
   }
 
   @Builder
