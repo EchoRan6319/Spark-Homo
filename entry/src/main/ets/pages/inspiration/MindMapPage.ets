@@ -197,49 +197,56 @@ struct MindMapPage {
                 })
             )
           )
+
+        Row() {
+          Button('−')
+            .fontSize(22)
+            .fontColor(Color.White)
+            .backgroundColor('#66000000')
+            .width(44)
+            .height(44)
+            .borderRadius(22)
+            .onClick(() => {
+              this.mapScale = Math.max(0.3, this.mapScale - 0.2);
+              this.drawMindMap();
+            })
+
+          Button('⟳')
+            .fontSize(16)
+            .fontColor(Color.White)
+            .backgroundColor('#66000000')
+            .width(44)
+            .height(44)
+            .borderRadius(22)
+            .margin({ left: 12, right: 12 })
+            .onClick(() => {
+              this.mapScale = 1;
+              this.offsetX = 0;
+              this.offsetY = 0;
+              this.drawMindMap();
+            })
+
+          Button('+')
+            .fontSize(22)
+            .fontColor(Color.White)
+            .backgroundColor('#66000000')
+            .width(44)
+            .height(44)
+            .borderRadius(22)
+            .onClick(() => {
+              this.mapScale = Math.min(3, this.mapScale + 0.2);
+              this.drawMindMap();
+            })
+        }
+        .position({ x: 16, y: 16 })
+        .padding(6)
+        .borderRadius(28)
+        .backgroundColor('#33000000')
+        .justifyContent(FlexAlign.Center)
       }
       .width('100%')
       .height('100%')
       .clip(true)
-
-      Row() {
-        Button('➖')
-          .fontSize(20)
-          .backgroundColor($r('app.color.card_background'))
-          .fontColor($r('app.color.text_primary'))
-          .width(40)
-          .height(40)
-          .onClick(() => {
-            this.mapScale = Math.max(0.3, this.mapScale - 0.2);
-            this.drawMindMap();
-          })
-
-        Button('⟲')
-          .fontSize(20)
-          .backgroundColor($r('app.color.card_background'))
-          .fontColor($r('app.color.text_primary'))
-          .width(40)
-          .height(40)
-          .margin({ left: 8, right: 8 })
-          .onClick(() => {
-            this.mapScale = 1;
-            this.offsetX = 0;
-            this.offsetY = 0;
-            this.drawMindMap();
-          })
-
-        Button('➕')
-          .fontSize(20)
-          .backgroundColor($r('app.color.card_background'))
-          .fontColor($r('app.color.text_primary'))
-          .width(40)
-          .height(40)
-          .onClick(() => {
-            this.mapScale = Math.min(3, this.mapScale + 0.2);
-            this.drawMindMap();
-          })
-      }
-      .position({ x: 16, y: 16 })
     }
     .width('100%')
     .layoutWeight(1)

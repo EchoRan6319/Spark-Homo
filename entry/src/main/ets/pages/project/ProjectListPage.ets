@@ -257,7 +257,7 @@ export struct ProjectListPage {
       router.pushUrl({
         url: 'pages/project/ProjectDetailPage',
         params: { id: project.id }
-      });
+      }, router.RouterMode.Standard);
     })
   }
 

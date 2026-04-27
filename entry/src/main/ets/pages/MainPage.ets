@@ -71,8 +71,9 @@ struct MainPage {
       .height(52)
       .backgroundColor($r('app.color.tab_bar_background'))
       .borderRadius(26)
-      .shadow({ radius: 16, color: $r('app.color.divider'), offsetX: 0, offsetY: 4 })
-      .backdropBlur(20)
+      .backdropBlur(30)
+      .shadow({ radius: 24, color: '#26000000', offsetX: 0, offsetY: 8 })
+      .border({ width: 0.5, color: $r('app.color.divider') })
       .justifyContent(FlexAlign.SpaceEvenly)
       .alignItems(VerticalAlign.Center)
     }

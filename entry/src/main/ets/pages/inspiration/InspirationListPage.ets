@@ -48,7 +48,7 @@ export struct InspirationListPage {
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.text_primary'))
         .onClick(() => {
-          router.pushUrl({ url: 'pages/inspiration/CapturePage' });
+          router.pushUrl({ url: 'pages/inspiration/CapturePage' }, router.RouterMode.Standard);
         })
     }
     .width('100%')
@@ -219,7 +219,7 @@ export struct InspirationListPage {
       router.pushUrl({
         url: 'pages/inspiration/InspirationDetailPage',
         params: { id: inspiration.id }
-      });
+      }, router.RouterMode.Standard);
     })
   }
 }

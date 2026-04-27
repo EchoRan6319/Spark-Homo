@@ -75,7 +75,7 @@ struct InspirationDetailPage {
         inspirationId: this.inspiration.id,
         title: this.inspiration.content.substring(0, 20)
       }
-    });
+    }, router.RouterMode.Standard);
   }
 
   async saveContent(): Promise<void> {
@@ -229,7 +229,7 @@ struct InspirationDetailPage {
         .margin({ bottom: 12 })
 
       Row() {
-        Button('🧠 AI分析')
+        Button('AI分析')
           .fontSize(13)
           .backgroundColor($r('app.color.primary'))
           .height(40)
@@ -241,7 +241,7 @@ struct InspirationDetailPage {
 
         Blank().width(8)
 
-        Button('🗺️ 思维导图')
+        Button('思维导图')
           .fontSize(13)
           .backgroundColor($r('app.color.secondary_button'))
           .fontColor($r('app.color.text_primary'))
@@ -252,12 +252,12 @@ struct InspirationDetailPage {
             router.pushUrl({
               url: 'pages/inspiration/MindMapPage',
               params: { id: this.inspirationId }
-            });
+            }, router.RouterMode.Standard);
           })
 
         Blank().width(8)
 
-        Button('💬 AI对话')
+        Button('AI对话')
           .fontSize(13)
           .backgroundColor($r('app.color.secondary_button'))
           .fontColor($r('app.color.text_primary'))
@@ -268,7 +268,7 @@ struct InspirationDetailPage {
             router.pushUrl({
               url: 'pages/ai/AiChatPage',
               params: { id: this.inspirationId }
-            });
+            }, router.RouterMode.Standard);
           })
       }
       .width('100%')

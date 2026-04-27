@@ -1,6 +1,6 @@
 import { AbilityConstant, Configuration, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
+import { window, display } from '@kit.ArkUI';
 import { RdbHelper } from '../data/datasources/RdbHelper';
 import { SettingsService } from '../services/storage/SettingsService';
 
@@ -55,8 +55,9 @@ export default class EntryAbility extends UIAbility {
       const avoidArea = mainWindow.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
       const statusBarHeightPx = avoidArea.topRect.height || DEFAULT_STATUS_BAR_HEIGHT;
       const navigationBarHeightPx = avoidArea.bottomRect.height || DEFAULT_NAVIGATION_BAR_HEIGHT;
-      const statusBarHeight = px2vp(statusBarHeightPx);
-      const navigationBarHeight = px2vp(navigationBarHeightPx);
+      const density = display.getDefaultDisplaySync().densityPixels;
+      const statusBarHeight = statusBarHeightPx / density;
+      const navigationBarHeight = navigationBarHeightPx / density;
       AppStorage.setOrCreate('statusBarHeight', statusBarHeight);
       AppStorage.setOrCreate('navigationBarHeight', navigationBarHeight);
       hilog.info(DOMAIN, 'testTag', 'StatusBarHeight: %{public}d, NavigationBarHeight: %{public}d',

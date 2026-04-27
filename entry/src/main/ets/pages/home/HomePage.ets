@@ -57,7 +57,7 @@ export struct HomePage {
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.text_primary'))
         .onClick(() => {
-          router.pushUrl({ url: 'pages/inspiration/CapturePage' });
+          router.pushUrl({ url: 'pages/inspiration/CapturePage' }, router.RouterMode.Standard);
         })
     }
     .width('100%')
@@ -138,7 +138,7 @@ export struct HomePage {
       router.pushUrl({
         url: 'pages/inspiration/InspirationDetailPage',
         params: { id: inspiration.id }
-      });
+      }, router.RouterMode.Standard);
     })
   }
 
@@ -158,7 +158,7 @@ export struct HomePage {
     .backgroundColor($r('app.color.card_background'))
     .borderRadius(16)
     .onClick(() => {
-      router.pushUrl({ url: 'pages/inspiration/CapturePage' });
+      router.pushUrl({ url: 'pages/inspiration/CapturePage' }, router.RouterMode.Standard);
     })
   }
 
@@ -181,7 +181,7 @@ export struct HomePage {
           .height(48)
           .borderRadius(12)
           .onClick(() => {
-            router.pushUrl({ url: 'pages/inspiration/CapturePage' });
+            router.pushUrl({ url: 'pages/inspiration/CapturePage' }, router.RouterMode.Standard);
           })
 
         Button('📁 查看项目')
