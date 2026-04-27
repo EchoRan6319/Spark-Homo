@@ -59,19 +59,20 @@ struct AiChatPage {
     this.messages.push({ role: 'assistant', content: '' });
 
     try {
-      const chatMessages = this.buildChatMessages(userMessage);
-      await this.aiService.chatStream(chatMessages, (chunk: string) => {
-        this.messages[aiMessageIndex].content += chunk;
-      });
+      const chatMessages = this.buildChatMessages();
+      const response = await this.aiService.chat(chatMessages);
+      this.messages[aiMessageIndex].content = response || '(空回复)';
+      this.messages = [...this.messages];
     } catch (err) {
-      console.error(`Chat stream failed: ${JSON.stringify(err)}`);
-      this.messages[aiMessageIndex].content = '抱歉，发生了错误，请稍后重试。';
+      console.error(`Chat failed: ${JSON.stringify(err)}`);
+      this.messages[aiMessageIndex].content = '抱歉，发生了错误：' + (err instanceof Error ? err.message : '请稍后重试。');
+      this.messages = [...this.messages];
     } finally {
       this.isStreaming = false;
     }
   }
 
-  buildChatMessages(userMessage: string): ChatMessageBuilder[] {
+  buildChatMessages(): ChatMessageBuilder[] {
     const messages: ChatMessageBuilder[] = [];
 
     if (this.inspiration) {
@@ -88,8 +89,6 @@ struct AiChatPage {
       }
     }
 
-    const userMsg: ChatMessageBuilder = { role: 'user', content: userMessage };
-    messages.push(userMsg);
     return messages;
   }
 
@@ -140,8 +139,12 @@ struct AiChatPage {
           Text(this.inspiration.content.substring(0, 20) + (this.inspiration.content.length > 20 ? '...' : ''))
             .fontSize(12)
             .fontColor($r('app.color.text_secondary'))
+            .textAlign(TextAlign.Center)
+            .width('100%')
         }
       }
+      .layoutWeight(1)
+      .alignItems(HorizontalAlign.Center)
 
       Blank()
 
@@ -156,7 +159,6 @@ struct AiChatPage {
     .width('100%')
     .height(56)
     .padding({ left: 16, right: 16 })
-    .margin({ left: 16, right: 16 })
   }
 
   @Builder

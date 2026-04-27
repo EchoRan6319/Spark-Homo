@@ -180,7 +180,7 @@ export class AiService {
 
     const systemMsg: ChatMessage = {
       role: 'system',
-      content: '你是一个思维导图生成助手。请基于用户的灵感生成一个树状结构的思维导图，返回JSON格式：{ name: "中心主题", children: [{ name: "分支1", children: [...] }] }。只返回JSON，不要其他文字。'
+      content: '你是一个思维导图生成助手。请基于用户的灵感生成一个树状结构的思维导图。\n要求：\n1. 深度不超过4层（根节点为第0层）\n2. 每个节点最多5个子节点\n3. 节点名称简洁（5-15字），使用关键词而非长句\n4. 根节点为灵感的核心主题\n5. 第一层节点为主要的分析维度或方向\n6. 更深层节点进行细化和展开\n\nJSON格式：{ "name": "中心主题", "children": [{ "name": "分支1", "children": [...] }] }\n只返回JSON，不要其他文字。'
     };
     const userMsg: ChatMessage = {
       role: 'user',
@@ -234,51 +234,55 @@ export class AiService {
 
   async chat(messages: ChatMessage[]): Promise<string> {
     const config = await this.getApiConfig();
-
-    const httpRequest = http.createHttp();
-    const url = config.baseUrl + '/chat/completions';
+    const baseUrl = config.baseUrl || 'https://api.openai.com/v1';
+    const url = baseUrl + '/chat/completions';
 
     const requestData: HttpRequestData = {
-      model: config.model,
+      model: config.model || 'gpt-4o-mini',
       messages: messages,
       temperature: 0.7
     };
 
-    try {
-      const response = await httpRequest.request(
+    return new Promise<string>((resolve, reject) => {
+      const httpRequest = http.createHttp();
+
+      httpRequest.request(
         url,
         {
           method: http.RequestMethod.POST,
           header: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + config.apiKey
+            'Authorization': 'Bearer ' + (config.apiKey || '')
           },
           extraData: JSON.stringify(requestData),
           connectTimeout: 30000,
           readTimeout: 30000
+        },
+        (err: Error, data: http.HttpResponse) => {
+          httpRequest.destroy();
+          if (err) {
+            reject(new Error('网络错误：' + JSON.stringify(err)));
+          } else if (data && data.responseCode === 200) {
+            try {
+              const resultStr = data.result as string;
+              const result: ApiResponse = JSON.parse(resultStr);
+              const content = result.choices[0].message.content;
+              resolve(content || '');
+            } catch (parseErr) {
+              reject(new Error('解析响应失败'));
+            }
+          } else {
+            const errorStr = data.result as string;
+            let errorMsg = 'HTTP ' + data.responseCode;
+            const extracted = this.extractErrorMessage(errorStr);
+            if (extracted !== errorStr) {
+              errorMsg = extracted;
+            }
+            reject(new Error(errorMsg));
+          }
         }
       );
-
-      if (response.responseCode === 200) {
-        const resultStr = response.result as string;
-        const result: ApiResponse = JSON.parse(resultStr);
-        return result.choices[0].message.content;
-      } else {
-        const errorStr = response.result as string;
-        let errorMsg = 'HTTP ' + response.responseCode;
-        const extracted = this.extractErrorMessage(errorStr);
-        if (extracted !== errorStr) {
-          errorMsg = extracted;
-        }
-        throw new Error(errorMsg);
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : JSON.stringify(err);
-      console.error('[AiService] chat error: ' + msg);
-      throw new Error(msg);
-    } finally {
-      httpRequest.destroy();
-    }
+    });
   }
 
   async chatStream(
@@ -299,7 +303,7 @@ export class AiService {
 
     return new Promise((resolve, reject) => {
       let buffer = '';
-      let hasError = false;
+      let settled = false;
 
       httpRequest.on('dataReceive', (data: ArrayBuffer) => {
         const uint8Array = new Uint8Array(data);
@@ -336,7 +340,8 @@ export class AiService {
 
       httpRequest.on('dataEnd', () => {
         httpRequest.destroy();
-        if (!hasError) {
+        if (!settled) {
+          settled = true;
           resolve();
         }
       });
@@ -355,17 +360,20 @@ export class AiService {
         },
         (err: Error, data: http.HttpResponse) => {
           if (err) {
-            hasError = true;
-            console.error('[AiService] chatStream request error: ' + JSON.stringify(err));
-            httpRequest.destroy();
-            reject(new Error('Stream request failed: ' + JSON.stringify(err)));
+            if (!settled) {
+              settled = true;
+              httpRequest.destroy();
+              reject(new Error('Stream request failed: ' + JSON.stringify(err)));
+            }
           } else if (data && data.responseCode !== 200) {
-            hasError = true;
-            const errorMsg = 'HTTP ' + data.responseCode + ': ' + (data.result || '');
-            console.error('[AiService] chatStream response error: ' + errorMsg);
-            httpRequest.destroy();
-            reject(new Error(errorMsg));
+            if (!settled) {
+              settled = true;
+              httpRequest.destroy();
+              const errorMsg = 'HTTP ' + data.responseCode + ': ' + (data.result || '');
+              reject(new Error(errorMsg));
+            }
           }
+          // 200：等待 dataEnd 触发后 resolve
         }
       );
     });

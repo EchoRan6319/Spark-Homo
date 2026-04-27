@@ -206,6 +206,7 @@ struct MindMapPage {
         Button('➖')
           .fontSize(20)
           .backgroundColor($r('app.color.card_background'))
+          .fontColor($r('app.color.text_primary'))
           .width(40)
           .height(40)
           .onClick(() => {
@@ -216,6 +217,7 @@ struct MindMapPage {
         Button('⟲')
           .fontSize(20)
           .backgroundColor($r('app.color.card_background'))
+          .fontColor($r('app.color.text_primary'))
           .width(40)
           .height(40)
           .margin({ left: 8, right: 8 })
@@ -229,6 +231,7 @@ struct MindMapPage {
         Button('➕')
           .fontSize(20)
           .backgroundColor($r('app.color.card_background'))
+          .fontColor($r('app.color.text_primary'))
           .width(40)
           .height(40)
           .onClick(() => {
@@ -284,7 +287,7 @@ struct MindMapPage {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#333333';
     ctx.font = '14px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';

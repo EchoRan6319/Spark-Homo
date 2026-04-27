@@ -9,9 +9,17 @@ import { SettingsPage } from './settings/SettingsPage';
 struct MainPage {
   @State selectedTabIndex: number = 0;
   @StorageProp('dataVersion') dataVersion: number = 0;
+  @StorageProp('switchToTab') @Watch('onSwitchTab') switchToTab: number = -1;
 
   onPageShow(): void {
     AppStorage.setOrCreate('dataVersion', (AppStorage.get<number>('dataVersion') || 0) + 1);
+  }
+
+  onSwitchTab(): void {
+    if (this.switchToTab >= 0 && this.switchToTab <= 3) {
+      this.selectedTabIndex = this.switchToTab;
+      AppStorage.setOrCreate<number>('switchToTab', -1);
+    }
   }
 
   build() {

@@ -10,3 +10,5 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+.claude/settings.local.json
+.claude/plans/ai-ai-2-goofy-nest.md

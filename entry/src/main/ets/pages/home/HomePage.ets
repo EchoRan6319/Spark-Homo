@@ -193,7 +193,7 @@ export struct HomePage {
           .height(48)
           .borderRadius(12)
           .onClick(() => {
-            router.pushUrl({ url: 'pages/project/ProjectListPage' });
+            AppStorage.setOrCreate<number>('switchToTab', 2);
           })
       }
       .width('100%')
