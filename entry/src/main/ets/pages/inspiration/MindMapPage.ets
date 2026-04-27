@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI';
 import { Inspiration } from '../../data/models/Inspiration';
 import { InspirationRepository } from '../../data/repositories/InspirationRepository';
 import { AiService, MindMapNode } from '../../services/ai/AiService';
+import { SettingsService } from '../../services/storage/SettingsService';
 
 @Entry
 @Component
@@ -12,10 +13,15 @@ struct MindMapPage {
   @State mapScale: number = 1;
   @State offsetX: number = 0;
   @State offsetY: number = 0;
+  @State canvasWidth: number = 0;
+  @State canvasHeight: number = 0;
+  @State lastPanX: number = 0;
+  @State lastPanY: number = 0;
 
   private inspirationId: number = 0;
   private inspirationRepository: InspirationRepository = InspirationRepository.getInstance();
   private aiService: AiService = AiService.getInstance();
+  private settingsService: SettingsService = SettingsService.getInstance();
 
   aboutToAppear() {
     const params = router.getParams() as Record<string, number>;
@@ -28,14 +34,44 @@ struct MindMapPage {
   async loadMindMap(): Promise<void> {
     try {
       this.inspiration = await this.inspirationRepository.getById(this.inspirationId);
-      if (this.inspiration) {
-        this.isLoading = true;
-        const data = await this.aiService.generateMindMap(this.inspiration.content);
-        this.mindMapData = data;
-        this.isLoading = false;
+      if (!this.inspiration) return;
+
+      const cachedData = await this.settingsService.getMindMap(this.inspirationId);
+      if (cachedData) {
+        try {
+          this.mindMapData = JSON.parse(cachedData) as MindMapNode;
+          return;
+        } catch {
+          console.warn('Failed to parse cached mind map, regenerating...');
+        }
       }
+
+      this.isLoading = true;
+      const data = await this.aiService.generateMindMap(this.inspiration.content);
+      this.mindMapData = data;
+      this.isLoading = false;
+
+      await this.settingsService.saveMindMap(this.inspirationId, JSON.stringify(data));
     } catch (err) {
       console.error(`Failed to load mind map: ${JSON.stringify(err)}`);
+      this.isLoading = false;
+    }
+  }
+
+  async regenerateMindMap(): Promise<void> {
+    try {
+      if (!this.inspiration) return;
+
+      this.isLoading = true;
+      this.mindMapData = null;
+
+      const data = await this.aiService.generateMindMap(this.inspiration.content);
+      this.mindMapData = data;
+      this.isLoading = false;
+
+      await this.settingsService.saveMindMap(this.inspirationId, JSON.stringify(data));
+    } catch (err) {
+      console.error(`Failed to regenerate mind map: ${JSON.stringify(err)}`);
       this.isLoading = false;
     }
   }
@@ -70,7 +106,7 @@ struct MindMapPage {
             .backgroundColor($r('app.color.primary'))
             .margin({ top: 12 })
             .onClick(() => {
-              this.loadMindMap();
+              this.regenerateMindMap();
             })
         }
         .width('100%')
@@ -107,9 +143,13 @@ struct MindMapPage {
 
       Blank()
 
-      Button('')
-        .width(40)
+      Button('⟳')
+        .fontSize(20)
         .backgroundColor(Color.Transparent)
+        .fontColor($r('app.color.text_primary'))
+        .onClick(() => {
+          this.regenerateMindMap();
+        })
     }
     .width('100%')
     .height(56)
@@ -120,20 +160,83 @@ struct MindMapPage {
   @Builder
   buildMindMapCanvas() {
     Column() {
-      Canvas(this.getCanvasContext())
-        .width('100%')
-        .height('100%')
-        .backgroundColor($r('app.color.card_background'))
-        .borderRadius(16)
-        .onReady(() => {
-          this.drawMindMap();
-        })
-        .gesture(
-          PinchGesture()
-            .onActionUpdate((event: GestureEvent) => {
-              this.mapScale = Math.max(0.5, Math.min(2, event.scale));
-            })
-        )
+      Stack() {
+        Canvas(this.getCanvasContext())
+          .width('100%')
+          .height('100%')
+          .backgroundColor($r('app.color.card_background'))
+          .borderRadius(16)
+          .onReady(() => {
+            this.drawMindMap();
+          })
+          .onAreaChange((oldArea, newArea) => {
+            this.canvasWidth = newArea.width as number;
+            this.canvasHeight = newArea.height as number;
+            this.drawMindMap();
+          })
+          .gesture(
+            GestureGroup(GestureMode.Parallel,
+              PinchGesture()
+                .onActionUpdate((event: GestureEvent) => {
+                  this.mapScale = Math.max(0.3, Math.min(3, event.scale));
+                  this.drawMindMap();
+                }),
+              PanGesture()
+                .onActionStart((event: GestureEvent) => {
+                  this.lastPanX = event.offsetX;
+                  this.lastPanY = event.offsetY;
+                })
+                .onActionUpdate((event: GestureEvent) => {
+                  const deltaX = event.offsetX - this.lastPanX;
+                  const deltaY = event.offsetY - this.lastPanY;
+                  this.offsetX += deltaX / this.mapScale;
+                  this.offsetY += deltaY / this.mapScale;
+                  this.lastPanX = event.offsetX;
+                  this.lastPanY = event.offsetY;
+                  this.drawMindMap();
+                })
+            )
+          )
+      }
+      .width('100%')
+      .height('100%')
+      .clip(true)
+
+      Row() {
+        Button('➖')
+          .fontSize(20)
+          .backgroundColor($r('app.color.card_background'))
+          .width(40)
+          .height(40)
+          .onClick(() => {
+            this.mapScale = Math.max(0.3, this.mapScale - 0.2);
+            this.drawMindMap();
+          })
+
+        Button('⟲')
+          .fontSize(20)
+          .backgroundColor($r('app.color.card_background'))
+          .width(40)
+          .height(40)
+          .margin({ left: 8, right: 8 })
+          .onClick(() => {
+            this.mapScale = 1;
+            this.offsetX = 0;
+            this.offsetY = 0;
+            this.drawMindMap();
+          })
+
+        Button('➕')
+          .fontSize(20)
+          .backgroundColor($r('app.color.card_background'))
+          .width(40)
+          .height(40)
+          .onClick(() => {
+            this.mapScale = Math.min(3, this.mapScale + 0.2);
+            this.drawMindMap();
+          })
+      }
+      .position({ x: 16, y: 16 })
     }
     .width('100%')
     .layoutWeight(1)
@@ -153,24 +256,21 @@ struct MindMapPage {
     const ctx = this.canvasContext;
     if (!ctx || !this.mindMapData) return;
 
-    const canvasWidth = 600;
-    const canvasHeight = 800;
+    const width = this.canvasWidth || 600;
+    const height = this.canvasHeight || 800;
 
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, width, height);
     ctx.save();
     ctx.scale(this.mapScale, this.mapScale);
-    ctx.translate(this.offsetX, this.offsetY);
+    ctx.translate(this.offsetX + width / (2 * this.mapScale), this.offsetY + height / (2 * this.mapScale));
 
-    const centerX = canvasWidth / 2;
-    const centerY = 100;
-
-    this.drawNode(ctx, this.mindMapData, centerX, centerY, 0, 0);
+    this.drawNode(ctx, this.mindMapData, 0, 0, 0, 0);
 
     ctx.restore();
   }
 
   drawNode(ctx: CanvasRenderingContext2D, node: MindMapNode, x: number, y: number, level: number, angle: number): void {
-    const nodeWidth = 120;
+    const nodeWidth = Math.max(120, node.name.length * 14 + 20);
     const nodeHeight = 40;
     const colors = ['#007AFF', '#34C759', '#FF9500', '#5856D6', '#FF3B30'];
     const color = colors[level % colors.length];
@@ -195,7 +295,7 @@ struct MindMapPage {
       const spreadAngle = Math.min(120, childCount * 30);
       const startAngle = angle - spreadAngle / 2;
       const angleStep = spreadAngle / (childCount - 1 || 1);
-      const distance = 120 + level * 20;
+      const distance = 140 + level * 30;
 
       node.children.forEach((child, index) => {
         const childAngle = startAngle + angleStep * index;

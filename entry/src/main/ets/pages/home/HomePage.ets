@@ -235,9 +235,15 @@ export struct HomePage {
                 .fontSize(14)
                 .fontColor($r('app.color.text_primary'))
                 .layoutWeight(1)
-              Text(task.isCompleted ? '✓' : '○')
+              Text(task.isCompleted === 1 ? '✓' : '○')
                 .fontSize(16)
-                .fontColor(task.isCompleted ? $r('app.color.success') : $r('app.color.text_secondary'))
+                .fontColor(task.isCompleted === 1 ? $r('app.color.success') : $r('app.color.text_secondary'))
+                .width(32)
+                .height(32)
+                .textAlign(TextAlign.Center)
+                .onClick(() => {
+                  this.viewModel.toggleTaskComplete(task);
+                })
             }
             .width('100%')
             .padding(12)

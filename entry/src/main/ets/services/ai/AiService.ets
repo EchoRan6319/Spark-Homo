@@ -82,6 +82,20 @@ export class AiService {
   }
 
   private async getApiConfig(): Promise<ApiConfig> {
+    // 优先读取当前预设的配置
+    const currentPresetName = await this.settingsService.getCurrentPresetName();
+    if (currentPresetName) {
+      const config = await this.settingsService.getModelConfig(currentPresetName);
+      if (config && config.apiKey) {
+        return {
+          baseUrl: config.baseUrl,
+          apiKey: config.apiKey,
+          model: config.model
+        };
+      }
+    }
+
+    // 兼容旧版本：如果没有预设配置，读取独立的配置项
     const baseUrl = await this.settingsService.getBaseUrl();
     const apiKey = await this.settingsService.getApiKey();
     const model = await this.settingsService.getModel();
@@ -150,7 +164,6 @@ export class AiService {
         throw new Error(errorMsg);
       }
     } catch (err) {
-      httpRequest.destroy();
       const msg = err instanceof Error ? err.message : JSON.stringify(err);
       console.error('[AiService] analyzeInspiration error: ' + msg);
       throw new Error('Failed to analyze inspiration: ' + msg);
@@ -211,7 +224,6 @@ export class AiService {
         throw new Error(errorMsg);
       }
     } catch (err) {
-      httpRequest.destroy();
       const msg = err instanceof Error ? err.message : JSON.stringify(err);
       console.error('[AiService] generateMindMap error: ' + msg);
       throw new Error('Failed to generate mind map: ' + msg);
@@ -261,7 +273,6 @@ export class AiService {
         throw new Error(errorMsg);
       }
     } catch (err) {
-      httpRequest.destroy();
       const msg = err instanceof Error ? err.message : JSON.stringify(err);
       console.error('[AiService] chat error: ' + msg);
       throw new Error(msg);
@@ -288,6 +299,7 @@ export class AiService {
 
     return new Promise((resolve, reject) => {
       let buffer = '';
+      let hasError = false;
 
       httpRequest.on('dataReceive', (data: ArrayBuffer) => {
         const uint8Array = new Uint8Array(data);
@@ -309,11 +321,14 @@ export class AiService {
             }
             try {
               const chunk: StreamChunk = JSON.parse(jsonStr);
-              const delta = chunk.choices[0].delta.content;
-              if (delta) {
-                onData(delta);
+              if (chunk.choices && chunk.choices.length > 0) {
+                const delta = chunk.choices[0].delta.content;
+                if (delta) {
+                  onData(delta);
+                }
               }
             } catch {
+              // 忽略无法解析的行
             }
           }
         }
@@ -321,7 +336,9 @@ export class AiService {
 
       httpRequest.on('dataEnd', () => {
         httpRequest.destroy();
-        resolve();
+        if (!hasError) {
+          resolve();
+        }
       });
 
       httpRequest.request(
@@ -336,11 +353,18 @@ export class AiService {
           connectTimeout: 60000,
           readTimeout: 60000
         },
-        (err: Error) => {
+        (err: Error, data: http.HttpResponse) => {
           if (err) {
-            console.error('[AiService] chatStream error: ' + JSON.stringify(err));
+            hasError = true;
+            console.error('[AiService] chatStream request error: ' + JSON.stringify(err));
             httpRequest.destroy();
             reject(new Error('Stream request failed: ' + JSON.stringify(err)));
+          } else if (data && data.responseCode !== 200) {
+            hasError = true;
+            const errorMsg = 'HTTP ' + data.responseCode + ': ' + (data.result || '');
+            console.error('[AiService] chatStream response error: ' + errorMsg);
+            httpRequest.destroy();
+            reject(new Error(errorMsg));
           }
         }
       );

@@ -57,6 +57,17 @@ export class HomeViewModel {
     }
   }
 
+  async toggleTaskComplete(task: SparkTask): Promise<void> {
+    try {
+      task.isCompleted = task.isCompleted === 1 ? 0 : 1;
+      task.updatedAt = Date.now();
+      await this.projectRepository.updateTask(task);
+      await this.loadTodayTasks();
+    } catch (err) {
+      console.error(`Failed to toggle task complete: ${JSON.stringify(err)}`);
+    }
+  }
+
   async togglePinTask(task: SparkTask): Promise<void> {
     try {
       if (task.isPinned === 1) {

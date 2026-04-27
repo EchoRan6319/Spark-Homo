@@ -9,6 +9,13 @@ export class AiPreset {
   model: string = '';
 }
 
+export class PreferredModel {
+  name: string = '';
+  baseUrl: string = '';
+  model: string = '';
+  apiKey: string = '';
+}
+
 export class AppConstants {
   static readonly DATABASE_NAME: string = 'spark.db';
   static readonly DATABASE_VERSION: number = 1;

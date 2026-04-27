@@ -3,11 +3,126 @@ import { ConfigurationConstant } from '@kit.AbilityKit';
 import { SettingsViewModel } from '../../viewmodels/SettingsViewModel';
 import { AppConstants, AiPreset } from '../../constants/AppConstants';
 
+@CustomDialog
+struct AddPresetDialog {
+  controller: CustomDialogController = new CustomDialogController({ builder: AddPresetDialog({}) })
+  onConfirm: (name: string, baseUrl: string, model: string) => void = () => {}
+  @State presetName: string = ''
+  @State presetBaseUrl: string = ''
+  @State presetModel: string = ''
+
+  build() {
+    Column() {
+      Text('添加自定义预设')
+        .fontSize(20)
+        .fontWeight(FontWeight.Bold)
+        .fontColor($r('app.color.text_primary'))
+        .width('100%')
+        .textAlign(TextAlign.Center)
+        .margin({ bottom: 20 })
+
+      TextInput({ placeholder: '预设名称', text: $$this.presetName })
+        .fontSize(16)
+        .fontColor($r('app.color.text_primary'))
+        .backgroundColor($r('app.color.input_background'))
+        .borderRadius(12)
+        .padding(12)
+        .width('100%')
+        .margin({ bottom: 12 })
+
+      TextInput({ placeholder: 'Base URL', text: $$this.presetBaseUrl })
+        .fontSize(16)
+        .fontColor($r('app.color.text_primary'))
+        .backgroundColor($r('app.color.input_background'))
+        .borderRadius(12)
+        .padding(12)
+        .width('100%')
+        .margin({ bottom: 12 })
+
+      TextInput({ placeholder: '模型名称', text: $$this.presetModel })
+        .fontSize(16)
+        .fontColor($r('app.color.text_primary'))
+        .backgroundColor($r('app.color.input_background'))
+        .borderRadius(12)
+        .padding(12)
+        .width('100%')
+        .margin({ bottom: 20 })
+
+      Row() {
+        Button('取消')
+          .fontSize(16)
+          .backgroundColor($r('app.color.secondary_button'))
+          .fontColor($r('app.color.text_primary'))
+          .layoutWeight(1)
+          .height(44)
+          .borderRadius(12)
+          .onClick(() => {
+            this.controller.close();
+          })
+
+        Button('添加')
+          .fontSize(16)
+          .fontWeight(FontWeight.Medium)
+          .backgroundColor($r('app.color.primary'))
+          .layoutWeight(1)
+          .height(44)
+          .borderRadius(12)
+          .margin({ left: 12 })
+          .onClick(() => {
+            if (this.presetName.trim() && this.presetBaseUrl.trim() && this.presetModel.trim()) {
+              this.onConfirm(this.presetName.trim(), this.presetBaseUrl.trim(), this.presetModel.trim());
+              this.controller.close();
+            }
+          })
+      }
+      .width('100%')
+    }
+    .padding(24)
+    .backgroundColor($r('app.color.card_background'))
+    .borderRadius(20)
+  }
+}
+
 @Component
 export struct SettingsPage {
   @State viewModel: SettingsViewModel = new SettingsViewModel();
   @State showPassword: boolean = false;
   @State selectedPreset: string = '';
+  @State preferredModel: string = '';
+
+  // UI状态 - 使用@State确保UI响应
+  @State connectionStatus: 'none' | 'testing' | 'success' | 'error' = 'none';
+  @State saveStatus: 'none' | 'saving' | 'success' | 'error' = 'none';
+  @State errorMessage: string = '';
+
+  private presetDialogController: CustomDialogController = new CustomDialogController({
+    builder: AddPresetDialog({
+      onConfirm: (name: string, baseUrl: string, model: string) => {
+        this.addCustomPreset(name, baseUrl, model);
+      }
+    }),
+    alignment: DialogAlignment.Center,
+    customStyle: true,
+    autoCancel: true
+  })
+
+  aboutToAppear(): void {
+    // 设置ViewModel的回调，将状态变化同步到UI
+    this.viewModel.onConnectionStatusChanged = (status) => {
+      this.connectionStatus = status;
+    };
+    this.viewModel.onSaveStatusChanged = (status) => {
+      this.saveStatus = status;
+    };
+    this.viewModel.onErrorMessageChanged = (message) => {
+      this.errorMessage = message;
+    };
+
+    this.viewModel.loadSettings().then(() => {
+      this.selectedPreset = this.viewModel.currentPresetName;
+      this.preferredModel = this.viewModel.preferredModel;
+    });
+  }
 
   build() {
     Column() {
@@ -31,9 +146,6 @@ export struct SettingsPage {
     .padding({
       top: AppStorage.get<number>('statusBarHeight') || 0,
       bottom: 16
-    })
-    .onAppear(() => {
-      this.viewModel.loadSettings();
     })
   }
 
@@ -61,7 +173,7 @@ export struct SettingsPage {
         .margin({ bottom: 12 })
 
       Column() {
-        Text('模型预设')
+        Text('优先使用模型')
           .fontSize(13)
           .fontColor($r('app.color.text_secondary'))
           .width('100%')
@@ -69,18 +181,29 @@ export struct SettingsPage {
 
         Scroll() {
           Row() {
-            ForEach(AppConstants.AI_PRESETS, (preset: AiPreset) => {
+            Text('不指定')
+              .fontSize(13)
+              .fontColor(this.preferredModel === '' ? Color.White : $r('app.color.text_primary'))
+              .backgroundColor(this.preferredModel === '' ? $r('app.color.primary') : $r('app.color.input_background'))
+              .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+              .borderRadius(16)
+              .margin({ right: 8 })
+              .onClick(() => {
+                this.preferredModel = '';
+                this.viewModel.setPreferredModel('');
+              })
+
+            ForEach(this.viewModel.getAllPresets(), (preset: AiPreset) => {
               Text(preset.name)
                 .fontSize(13)
-                .fontColor(this.selectedPreset === preset.name ? Color.White : $r('app.color.text_primary'))
-                .backgroundColor(this.selectedPreset === preset.name ? $r('app.color.primary') : $r('app.color.input_background'))
+                .fontColor(this.preferredModel === preset.name ? Color.White : $r('app.color.text_primary'))
+                .backgroundColor(this.preferredModel === preset.name ? $r('app.color.primary') : $r('app.color.input_background'))
                 .padding({ left: 12, right: 12, top: 6, bottom: 6 })
                 .borderRadius(16)
                 .margin({ right: 8 })
                 .onClick(() => {
-                  this.selectedPreset = preset.name;
-                  this.viewModel.saveBaseUrl(preset.baseUrl);
-                  this.viewModel.saveModel(preset.model);
+                  this.preferredModel = preset.name;
+                  this.viewModel.setPreferredModel(preset.name);
                 })
             })
           }
@@ -95,6 +218,12 @@ export struct SettingsPage {
           .width('100%')
           .color($r('app.color.divider'))
           .margin({ top: 8, bottom: 8 })
+
+        Text('当前编辑: ' + (this.viewModel.currentPresetName || '未选择'))
+          .fontSize(13)
+          .fontColor($r('app.color.text_secondary'))
+          .width('100%')
+          .margin({ bottom: 8 })
 
         Text('API Key')
           .fontSize(13)
@@ -173,27 +302,58 @@ export struct SettingsPage {
           .color($r('app.color.divider'))
           .margin({ top: 8, bottom: 8 })
 
-        Button('测试连接')
-          .fontSize(15)
-          .fontWeight(FontWeight.Medium)
-          .backgroundColor(this.getConnectionButtonColor())
-          .width('100%')
-          .height(44)
-          .borderRadius(12)
-          .margin({ top: 8 })
-          .onClick(() => {
-            this.viewModel.testConnection();
-          })
+        Row() {
+          Button('测试连接')
+            .fontSize(15)
+            .fontWeight(FontWeight.Medium)
+            .backgroundColor(this.getConnectionButtonColor())
+            .layoutWeight(1)
+            .height(44)
+            .borderRadius(12)
+            .onClick(() => {
+              this.viewModel.testConnection();
+            })
 
-        if (this.viewModel.connectionStatus === 'success') {
+          Button('保存设置')
+            .fontSize(15)
+            .fontWeight(FontWeight.Medium)
+            .backgroundColor($r('app.color.primary'))
+            .layoutWeight(1)
+            .height(44)
+            .borderRadius(12)
+            .margin({ left: 12 })
+            .onClick(() => {
+              this.viewModel.saveAllSettings();
+            })
+        }
+        .width('100%')
+        .margin({ top: 8 })
+
+        if (this.connectionStatus === 'success') {
           Text('✓ 连接成功')
             .fontSize(13)
             .fontColor($r('app.color.success'))
             .width('100%')
             .textAlign(TextAlign.Center)
             .margin({ top: 8 })
-        } else if (this.viewModel.connectionStatus === 'error') {
-          Text('✗ ' + (this.viewModel.errorMessage || '连接失败，请检查配置'))
+        } else if (this.connectionStatus === 'error') {
+          Text('✗ ' + (this.errorMessage || '连接失败，请检查配置'))
+            .fontSize(13)
+            .fontColor($r('app.color.error'))
+            .width('100%')
+            .textAlign(TextAlign.Center)
+            .margin({ top: 8 })
+        }
+
+        if (this.saveStatus === 'success') {
+          Text('✓ 保存成功')
+            .fontSize(13)
+            .fontColor($r('app.color.success'))
+            .width('100%')
+            .textAlign(TextAlign.Center)
+            .margin({ top: 8 })
+        } else if (this.saveStatus === 'error') {
+          Text('✗ ' + (this.errorMessage || '保存失败'))
             .fontSize(13)
             .fontColor($r('app.color.error'))
             .width('100%')
@@ -206,8 +366,128 @@ export struct SettingsPage {
       .backgroundColor($r('app.color.card_background'))
       .borderRadius(16)
       .margin({ bottom: 16 })
+
+      this.buildPresetManager()
     }
     .width('100%')
+  }
+
+  @Builder
+  buildPresetManager() {
+    Column() {
+      Text('模型预设管理')
+        .fontSize(18)
+        .fontWeight(FontWeight.Medium)
+        .fontColor($r('app.color.text_primary'))
+        .width('100%')
+        .margin({ bottom: 12 })
+
+      Column() {
+        ForEach(this.viewModel.getAllPresets(), (preset: AiPreset) => {
+          Row() {
+            Column() {
+              Text(preset.name)
+                .fontSize(15)
+                .fontColor($r('app.color.text_primary'))
+                .fontWeight(FontWeight.Medium)
+
+              Text(preset.model)
+                .fontSize(12)
+                .fontColor($r('app.color.text_secondary'))
+                .margin({ top: 2 })
+            }
+            .alignItems(HorizontalAlign.Start)
+            .layoutWeight(1)
+
+            if (this.isCustomPreset(preset.name)) {
+              Button('删除')
+                .fontSize(12)
+                .fontColor($r('app.color.error'))
+                .backgroundColor(Color.Transparent)
+                .height(32)
+                .onClick(() => {
+                  this.deleteCustomPreset(preset.name);
+                })
+            }
+
+            Button('编辑')
+              .fontSize(12)
+              .fontColor($r('app.color.primary'))
+              .backgroundColor(Color.Transparent)
+              .height(32)
+              .margin({ left: 8 })
+              .onClick(() => {
+                this.selectedPreset = preset.name;
+                this.viewModel.selectPreset(preset);
+              })
+          }
+          .width('100%')
+          .height(56)
+          .padding({ left: 12, right: 12 })
+
+          Divider()
+            .height(1)
+            .width('100%')
+            .color($r('app.color.divider'))
+            .margin({ top: 4, bottom: 4 })
+        })
+
+        Row() {
+          Text('+ 添加自定义预设')
+            .fontSize(15)
+            .fontColor($r('app.color.primary'))
+            .layoutWeight(1)
+
+          Button('')
+            .width(0)
+            .height(0)
+            .backgroundColor(Color.Transparent)
+        }
+        .width('100%')
+        .height(48)
+        .padding({ left: 12, right: 12 })
+        .onClick(() => {
+          this.presetDialogController.open();
+        })
+      }
+      .width('100%')
+      .padding(16)
+      .backgroundColor($r('app.color.card_background'))
+      .borderRadius(16)
+      .margin({ bottom: 16 })
+    }
+    .width('100%')
+  }
+
+  isCustomPreset(name: string): boolean {
+    return this.viewModel.customPresets.some(p => p.name === name);
+  }
+
+  async addCustomPreset(name: string, baseUrl: string, model: string): Promise<void> {
+    await this.viewModel.addCustomPreset(name, baseUrl, model);
+    this.selectedPreset = name;
+    await this.viewModel.selectPreset({ name, baseUrl, model });
+  }
+
+  async deleteCustomPreset(name: string): Promise<void> {
+    await this.viewModel.deleteCustomPreset(name);
+    if (this.selectedPreset === name) {
+      this.selectedPreset = '';
+    }
+    if (this.preferredModel === name) {
+      this.preferredModel = '';
+    }
+  }
+
+  getConnectionButtonColor(): ResourceStr {
+    if (this.connectionStatus === 'success') {
+      return $r('app.color.success');
+    } else if (this.connectionStatus === 'error') {
+      return $r('app.color.error');
+    } else if (this.connectionStatus === 'testing') {
+      return $r('app.color.warning');
+    }
+    return $r('app.color.primary');
   }
 
   @Builder
@@ -367,17 +647,6 @@ export struct SettingsPage {
       .borderRadius(16)
     }
     .width('100%')
-  }
-
-  getConnectionButtonColor(): ResourceStr {
-    if (this.viewModel.connectionStatus === 'success') {
-      return $r('app.color.success');
-    } else if (this.viewModel.connectionStatus === 'error') {
-      return $r('app.color.error');
-    } else if (this.viewModel.connectionStatus === 'testing') {
-      return $r('app.color.warning');
-    }
-    return $r('app.color.primary');
   }
 
   async applyThemeMode(mode: string): Promise<void> {
