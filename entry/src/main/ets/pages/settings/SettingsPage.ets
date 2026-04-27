@@ -1,7 +1,8 @@
 import { router } from '@kit.ArkUI';
-import { ConfigurationConstant } from '@kit.AbilityKit';
+import { ConfigurationConstant, Context } from '@kit.AbilityKit';
 import { SettingsViewModel } from '../../viewmodels/SettingsViewModel';
 import { AppConstants, AiPreset } from '../../constants/AppConstants';
+import { DataExportService } from '../../services/storage/DataExportService';
 
 @CustomDialog
 struct AddPresetDialog {
@@ -94,6 +95,8 @@ export struct SettingsPage {
   @State connectionStatus: 'none' | 'testing' | 'success' | 'error' = 'none';
   @State saveStatus: 'none' | 'saving' | 'success' | 'error' = 'none';
   @State errorMessage: string = '';
+  @State exportStatus: 'none' | 'exporting' | 'importing' | 'success' | 'error' = 'none';
+  @State dataMessage: string = '';
 
   private presetDialogController: CustomDialogController = new CustomDialogController({
     builder: AddPresetDialog({
@@ -132,6 +135,7 @@ export struct SettingsPage {
         Column() {
           this.buildAiSettings()
           this.buildThemeSettings()
+          this.buildDataManagement()
           this.buildAboutSection()
         }
         .width('100%')
@@ -577,6 +581,123 @@ export struct SettingsPage {
       .margin({ bottom: 16 })
     }
     .width('100%')
+  }
+
+  @Builder
+  buildDataManagement() {
+    Column() {
+      Text('数据管理')
+        .fontSize(18)
+        .fontWeight(FontWeight.Medium)
+        .fontColor($r('app.color.text_primary'))
+        .width('100%')
+        .margin({ bottom: 12 })
+
+      Column() {
+        Row() {
+          Button('导出数据')
+            .fontSize(15)
+            .fontWeight(FontWeight.Medium)
+            .backgroundColor($r('app.color.primary'))
+            .layoutWeight(1)
+            .height(44)
+            .borderRadius(12)
+            .onClick(() => {
+              this.doExport();
+            })
+
+          Button('导入数据')
+            .fontSize(15)
+            .fontWeight(FontWeight.Medium)
+            .backgroundColor($r('app.color.secondary_button'))
+            .fontColor($r('app.color.text_primary'))
+            .layoutWeight(1)
+            .height(44)
+            .borderRadius(12)
+            .margin({ left: 12 })
+            .onClick(() => {
+              this.doImport();
+            })
+        }
+        .width('100%')
+
+        if (this.exportStatus === 'exporting') {
+          Row() {
+            LoadingProgress()
+              .width(16)
+              .height(16)
+              .color($r('app.color.primary'))
+            Text(' 正在导出...')
+              .fontSize(13)
+              .fontColor($r('app.color.text_secondary'))
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
+          .margin({ top: 8 })
+        } else if (this.exportStatus === 'importing') {
+          Row() {
+            LoadingProgress()
+              .width(16)
+              .height(16)
+              .color($r('app.color.primary'))
+            Text(' 正在导入...')
+              .fontSize(13)
+              .fontColor($r('app.color.text_secondary'))
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
+          .margin({ top: 8 })
+        } else if (this.exportStatus === 'success') {
+          Text('✓ ' + this.dataMessage)
+            .fontSize(13)
+            .fontColor($r('app.color.success'))
+            .width('100%')
+            .textAlign(TextAlign.Center)
+            .margin({ top: 8 })
+        } else if (this.exportStatus === 'error') {
+          Text('✗ ' + this.dataMessage)
+            .fontSize(13)
+            .fontColor($r('app.color.error'))
+            .width('100%')
+            .textAlign(TextAlign.Center)
+            .margin({ top: 8 })
+        }
+      }
+      .width('100%')
+      .padding(16)
+      .backgroundColor($r('app.color.card_background'))
+      .borderRadius(16)
+      .margin({ bottom: 16 })
+    }
+    .width('100%')
+  }
+
+  async doExport(): Promise<void> {
+    this.exportStatus = 'exporting';
+    this.dataMessage = '';
+    try {
+      const service = DataExportService.getInstance();
+      await service.exportData(getContext(this));
+      this.exportStatus = 'success';
+      this.dataMessage = '数据已导出';
+    } catch (err) {
+      this.exportStatus = 'error';
+      this.dataMessage = '导出失败：' + JSON.stringify(err);
+    }
+  }
+
+  async doImport(): Promise<void> {
+    this.exportStatus = 'importing';
+    this.dataMessage = '';
+    try {
+      const service = DataExportService.getInstance();
+      const result = await service.importData(getContext(this));
+      this.exportStatus = 'success';
+      this.dataMessage = result;
+    } catch (err) {
+      this.exportStatus = 'error';
+      this.dataMessage = '导入失败：' + JSON.stringify(err);
+    }
   }
 
   @Builder
