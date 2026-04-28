@@ -130,23 +130,23 @@ struct MindMapPage {
         .fontSize(24)
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.text_primary'))
+        .constraintSize({ minWidth: 44 })
         .onClick(() => {
           router.back();
         })
-
-      Blank()
 
       Text('思维导图')
         .fontSize(18)
         .fontWeight(FontWeight.Medium)
         .fontColor($r('app.color.text_primary'))
-
-      Blank()
+        .layoutWeight(1)
+        .textAlign(TextAlign.Center)
 
       Button('⟳')
         .fontSize(20)
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.text_primary'))
+        .constraintSize({ minWidth: 44 })
         .onClick(() => {
           this.regenerateMindMap();
         })
@@ -154,7 +154,6 @@ struct MindMapPage {
     .width('100%')
     .height(56)
     .padding({ left: 16, right: 16 })
-    .margin({ left: 16, right: 16 })
   }
 
   @Builder

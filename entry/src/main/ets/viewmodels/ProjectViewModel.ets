@@ -8,6 +8,7 @@ export class ProjectViewModel {
   projects: SparkProject[] = [];
   currentProject: SparkProject | null = null;
   currentTasks: SparkTask[] = [];
+  taskCounts: Record<number, TaskCountResult> = {};
 
   private projectRepository: ProjectRepository;
   private inspirationRepository: InspirationRepository;
@@ -26,9 +27,22 @@ export class ProjectViewModel {
         }
         return b.updatedAt - a.updatedAt;
       });
+
+      // 加载每个项目的任务统计
+      const counts: Record<number, TaskCountResult> = {};
+      for (let i = 0; i < this.projects.length; i++) {
+        const pid = this.projects[i].id;
+        try {
+          counts[pid] = await this.projectRepository.getTaskCount(pid);
+        } catch {
+          counts[pid] = { total: 0, completed: 0 };
+        }
+      }
+      this.taskCounts = counts;
     } catch (err) {
       console.error(`Failed to load projects: ${JSON.stringify(err)}`);
       this.projects = [];
+      this.taskCounts = {};
     }
   }
 

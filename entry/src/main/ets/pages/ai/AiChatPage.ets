@@ -123,11 +123,10 @@ struct AiChatPage {
         .fontSize(24)
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.text_primary'))
+        .constraintSize({ minWidth: 44 })
         .onClick(() => {
           router.back();
         })
-
-      Blank()
 
       Column() {
         Text('AI 对话')
@@ -146,12 +145,11 @@ struct AiChatPage {
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Center)
 
-      Blank()
-
       Button('清空')
         .fontSize(13)
         .backgroundColor(Color.Transparent)
         .fontColor($r('app.color.primary'))
+        .constraintSize({ minWidth: 44 })
         .onClick(() => {
           this.clearChat();
         })

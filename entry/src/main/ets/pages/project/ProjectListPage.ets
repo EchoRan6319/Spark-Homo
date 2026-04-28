@@ -311,11 +311,13 @@ export struct ProjectListPage {
   }
 
   getCompletedTasksCount(projectId: number): number {
-    return 0;
+    const counts = this.viewModel.taskCounts[projectId];
+    return counts ? counts.completed : 0;
   }
 
   getTotalTasksCount(projectId: number): number {
-    return 0;
+    const counts = this.viewModel.taskCounts[projectId];
+    return counts ? counts.total : 0;
   }
 
   async createProject(title: string, description: string): Promise<void> {
