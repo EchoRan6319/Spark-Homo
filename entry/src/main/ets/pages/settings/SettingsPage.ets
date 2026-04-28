@@ -177,58 +177,61 @@ export struct SettingsPage {
         .margin({ bottom: 12 })
 
       Column() {
-        Text('优先使用模型')
+        // 预设选择行
+        Text('选择预设')
           .fontSize(13)
           .fontColor($r('app.color.text_secondary'))
           .width('100%')
           .margin({ bottom: 8 })
 
-        Scroll() {
-          Row() {
-            Text('不指定')
-              .fontSize(13)
-              .fontColor(this.preferredModel === '' ? Color.White : $r('app.color.text_primary'))
-              .backgroundColor(this.preferredModel === '' ? $r('app.color.primary') : $r('app.color.input_background'))
-              .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-              .borderRadius(16)
-              .margin({ right: 8 })
-              .onClick(() => {
-                this.preferredModel = '';
-                this.viewModel.setPreferredModel('');
+        Row() {
+          Scroll() {
+            Row() {
+              ForEach(this.viewModel.getAllPresets(), (preset: AiPreset) => {
+                Text(preset.name)
+                  .fontSize(13)
+                  .fontColor(this.viewModel.currentPresetName === preset.name ? Color.White : $r('app.color.text_primary'))
+                  .backgroundColor(this.viewModel.currentPresetName === preset.name ? $r('app.color.primary') : $r('app.color.input_background'))
+                  .padding({ left: 16, right: 16, top: 8, bottom: 8 })
+                  .borderRadius(18)
+                  .margin({ right: 8 })
+                  .onClick(() => {
+                    this.viewModel.selectPreset(preset);
+                    this.selectedPreset = preset.name;
+                  })
               })
-
-            ForEach(this.viewModel.getAllPresets(), (preset: AiPreset) => {
-              Text(preset.name)
-                .fontSize(13)
-                .fontColor(this.preferredModel === preset.name ? Color.White : $r('app.color.text_primary'))
-                .backgroundColor(this.preferredModel === preset.name ? $r('app.color.primary') : $r('app.color.input_background'))
-                .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-                .borderRadius(16)
-                .margin({ right: 8 })
-                .onClick(() => {
-                  this.preferredModel = preset.name;
-                  this.viewModel.setPreferredModel(preset.name);
-                })
-            })
+            }
           }
+          .scrollable(ScrollDirection.Horizontal)
+          .scrollBar(BarState.Off)
+          .layoutWeight(1)
+
+          Button('+ 添加')
+            .fontSize(13)
+            .fontColor($r('app.color.primary'))
+            .backgroundColor($r('app.color.input_background'))
+            .height(34)
+            .borderRadius(18)
+            .onClick(() => {
+              this.presetDialogController.open();
+            })
         }
-        .scrollable(ScrollDirection.Horizontal)
-        .scrollBar(BarState.Off)
         .width('100%')
-        .margin({ bottom: 12 })
+        .margin({ bottom: 8 })
+
+        Text('当前: ' + (this.viewModel.currentPresetName || '未选择'))
+          .fontSize(12)
+          .fontColor($r('app.color.text_secondary'))
+          .width('100%')
+          .margin({ bottom: 12 })
 
         Divider()
           .height(1)
           .width('100%')
           .color($r('app.color.divider'))
-          .margin({ top: 8, bottom: 8 })
+          .margin({ top: 4, bottom: 12 })
 
-        Text('当前编辑: ' + (this.viewModel.currentPresetName || '未选择'))
-          .fontSize(13)
-          .fontColor($r('app.color.text_secondary'))
-          .width('100%')
-          .margin({ bottom: 8 })
-
+        // API Key
         Text('API Key')
           .fontSize(13)
           .fontColor($r('app.color.text_secondary'))
@@ -255,13 +258,9 @@ export struct SettingsPage {
             })
         }
         .width('100%')
+        .margin({ bottom: 12 })
 
-        Divider()
-          .height(1)
-          .width('100%')
-          .color($r('app.color.divider'))
-          .margin({ top: 8, bottom: 8 })
-
+        // Base URL
         Text('Base URL')
           .fontSize(13)
           .fontColor($r('app.color.text_secondary'))
@@ -277,13 +276,9 @@ export struct SettingsPage {
           .onChange((value: string) => {
             this.viewModel.saveBaseUrl(value);
           })
+          .margin({ bottom: 12 })
 
-        Divider()
-          .height(1)
-          .width('100%')
-          .color($r('app.color.divider'))
-          .margin({ top: 8, bottom: 8 })
-
+        // 模型
         Text('模型')
           .fontSize(13)
           .fontColor($r('app.color.text_secondary'))
@@ -299,13 +294,9 @@ export struct SettingsPage {
           .onChange((value: string) => {
             this.viewModel.saveModel(value);
           })
+          .margin({ bottom: 16 })
 
-        Divider()
-          .height(1)
-          .width('100%')
-          .color($r('app.color.divider'))
-          .margin({ top: 8, bottom: 8 })
-
+        // 操作按钮
         Row() {
           Button('测试连接')
             .fontSize(15)
@@ -331,22 +322,23 @@ export struct SettingsPage {
             })
         }
         .width('100%')
-        .margin({ top: 8 })
+        .margin({ bottom: 8 })
 
+        // 状态反馈
         if (this.connectionStatus === 'success') {
           Text('✓ 连接成功')
             .fontSize(13)
             .fontColor($r('app.color.success'))
             .width('100%')
             .textAlign(TextAlign.Center)
-            .margin({ top: 8 })
+            .margin({ top: 4 })
         } else if (this.connectionStatus === 'error') {
-          Text('✗ ' + (this.errorMessage || '连接失败，请检查配置'))
+          Text('✗ ' + (this.errorMessage || '连接失败'))
             .fontSize(13)
             .fontColor($r('app.color.error'))
             .width('100%')
             .textAlign(TextAlign.Center)
-            .margin({ top: 8 })
+            .margin({ top: 4 })
         }
 
         if (this.saveStatus === 'success') {
@@ -355,14 +347,14 @@ export struct SettingsPage {
             .fontColor($r('app.color.success'))
             .width('100%')
             .textAlign(TextAlign.Center)
-            .margin({ top: 8 })
+            .margin({ top: 4 })
         } else if (this.saveStatus === 'error') {
           Text('✗ ' + (this.errorMessage || '保存失败'))
             .fontSize(13)
             .fontColor($r('app.color.error'))
             .width('100%')
             .textAlign(TextAlign.Center)
-            .margin({ top: 8 })
+            .margin({ top: 4 })
         }
       }
       .width('100%')
@@ -370,8 +362,6 @@ export struct SettingsPage {
       .backgroundColor($r('app.color.card_background'))
       .borderRadius(16)
       .margin({ bottom: 16 })
-
-      this.buildPresetManager()
     }
     .width('100%')
   }
@@ -755,7 +745,7 @@ export struct SettingsPage {
             .fontColor($r('app.color.text_secondary'))
             .layoutWeight(1)
 
-          Text('Spark Team')
+          Text('EchoRan 申浩然')
             .fontSize(15)
             .fontColor($r('app.color.text_primary'))
         }
